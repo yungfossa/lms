@@ -3,6 +3,7 @@ version: '3.8'
 volumes:
   prometheus-data: {}
   alertmanager-data: {}
+  grafana-data: {}
 
 services:
   node_exporter:
@@ -42,4 +43,11 @@ services:
     ports:
       - '9093:9093'
 
-  
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - 'grafana-data:/var/lib/grafana'
+    ports:
+      - "3000:3000"
