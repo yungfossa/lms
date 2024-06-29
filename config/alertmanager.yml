@@ -1,0 +1,18 @@
+global:
+  resolve_timeout: 1m
+
+route:
+  receiver: 'mail_alert'
+  group_by: [ alertname ]
+  repeat_interval: 1m
+
+receivers:
+- name: 'mail_alert'
+  email_configs:
+  - smarthost: 'smtp.gmail.com:587'
+    auth_username: '<email>'
+    auth_password: '<auth pass>'
+    from: '<from email>>'
+    to: <to email>'
+    headers:
+      subject: 'Prometheus Mail Alert'
