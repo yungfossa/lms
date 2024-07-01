@@ -10,21 +10,18 @@ clients:
 
 # scrape logs from local machine
 scrape_configs:
-- job_name: local
-  static_configs:
-  - targets:
-      - localhost
-    labels:
-      job: varlogs
-      __path__: /var/log/*log
-      stream: stdout
-
-# scrape logs from docker
-scrape_configs:
-- job_name: docker
-  pipeline_stages:
-    - docker: {}
-  static_configs:
-    - labels:
-        job: docker
-        __path__: /var/lib/docker/containers/*/*-json.log
+  - job_name: local
+    static_configs:
+    - targets:
+        - localhost
+      labels:
+        job: varlogs
+        __path__: /var/log/*log
+        stream: stdout
+  - job_name: docker
+    pipeline_stages:
+      - docker: {}
+    static_configs:
+      - labels:
+          job: docker
+          __path__: /var/lib/docker/containers/*/*-json.log
