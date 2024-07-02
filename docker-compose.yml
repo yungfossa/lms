@@ -1,8 +1,5 @@
 version: '3.8'
 
-networks:
-  loki-net:
-
 volumes:
   prometheus-data: {}
   alertmanager-data: {}
@@ -11,12 +8,13 @@ volumes:
 services:
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
-    container_name: node_exporter
+    container_name: node-exporter
+    hostname: node-exporter
     restart: unless-stopped
     network_mode: host
     pid: host 
     volumes:
-      - '/:/host:ro,rslave'
+      - '/proc:/host/proc'
     command:
       - '--path.rootfs=/host'
 
@@ -34,6 +32,18 @@ services:
     ports: 
       - '9090:9090'
 
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    restart: unless-stopped
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - '8080:8080'
+  
   alertmanager:
     image: quay.io/prometheus/alertmanager:latest
     container_name: alertmanager
@@ -55,8 +65,6 @@ services:
       - '--config.file=/etc/loki/loki.yml'
     ports:
       - "3100:3100"
-    networks:
-      - loki-net
     
   promtail:
     image: grafana/promtail:latest
@@ -66,8 +74,6 @@ services:
       - ./promtail/promtail.yml:/etc/promtail/promtail.yml
     command: 
       - '--config.file=/etc/promtail/promtail.yml'
-    networks:
-      - loki-net
 
   grafana:
     image: grafana/grafana:latest
@@ -77,6 +83,6 @@ services:
       - ./grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
       - 'grafana-data:/var/lib/grafana'
     ports:
-      - "3000:3000"
-    networks:
-      - loki-net
+      - '3000:3000'
+
+  
