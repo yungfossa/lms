@@ -9,7 +9,6 @@ services:
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
     container_name: node-exporter
-    hostname: node-exporter
     restart: unless-stopped
     network_mode: host
     pid: host 
