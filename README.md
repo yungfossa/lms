@@ -1,6 +1,6 @@
 ## Logging and monitoring system of Docker containers
 
-`deamon.json`
+`daemon.json`
 
 ```json
 {
